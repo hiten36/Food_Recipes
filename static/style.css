@@ -174,7 +174,7 @@ body{
     padding-top: 10px;
     text-align: start;
 }
-.view:hover{
+.view:hover a{
     color: #0ba2d4;
 }
 .sc1 h5{
@@ -237,7 +237,7 @@ body{
 }
 @media screen and (max-width:651px){
     .ser-card{
-        width: 90%;
+        width: 95%;
     }
     .img img{
         height: 21rem;
@@ -248,7 +248,7 @@ body{
         align-items: center;
     }
     .mimg{
-        width: 80%;
+        width: 95%;
         height: 23rem;
     }
     .mimg img{
