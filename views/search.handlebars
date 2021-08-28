@@ -1,0 +1,99 @@
+{{>navbar}}
+<div class="ser-main">
+    <div class="ser-main1">
+        <form class="ser1">
+            <input placeholder="Search Food Recipe" type="text" class="form-control" id="query" aria-describedby="query">
+            <button type="submit" id="ser-btn1" class="btn btn-info">Search</button>
+        </form>
+        <div class="ser2">
+
+        </div>
+        <div class="load-more">
+            <button id="load-more" class="btn btn-success">Load More</button>
+        </div>
+    </div>
+</div>
+<script>
+    flag3=true;
+    async function getData(query,flag1,from,to)
+    {
+        if(flag1)
+        {
+            document.querySelector('.ser-main').classList.add('ser-main-h');
+        }
+        let nc=document.createElement('div');
+        nc.setAttribute('class','load load-1');
+        nc.innerHTML=`<div class="spinner-grow text-danger" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-info" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-success" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>`;
+        document.querySelector('.ser2').appendChild(nc);
+        var app_id="3e416a2f";
+        var api_key="99b6af3bb8c0bddcec57f925bf859cf8";
+        var url=`https://api.edamam.com/search?q=${query}&app_id=${app_id}&app_key=${api_key}&from=${from}&to=${to}`;
+        let response=await fetch(url);
+        let data=await response.json();
+        var str="";
+        k=0;
+        for(i of data.hits)
+        {
+            str+=`<div class="ser-card">
+                    <div class="img">
+                        <img src="${i.recipe.image}" alt="">
+                    </div>
+                    <div class="sc1">
+                        <h5>${i.recipe.label}</h5>
+                        <div class="view">
+                            <a href="/more/${query}-${from}-${to}-${k}">View More</a>
+                        </div>
+                    </div>
+                    <div class="sc2">
+                        <p>Calories: <b>${i.recipe.calories}</b></p>
+                        <p>Diet Label: <b>${(i.recipe.dietLabels.length!=0)? i.recipe.dietLabels.toString().replace(/,/g, " , ").slice(0,90) : "Null"}</b></p>
+                        <p>Health Label: <b>${i.recipe.healthLabels.toString().replace(/,/g, " , ").slice(0,90)} ...</b></p>
+                    </div>
+                </div>`;
+            k++;
+        }
+        if(flag1)
+        {
+            document.querySelector('.ser-main').classList.remove('ser-main-h');
+        }
+        let nc1=document.createElement('div');
+        nc1.setAttribute('class','ser21');
+        nc1.innerHTML=str;
+        document.querySelector('.ser2').removeChild(nc);
+        document.querySelector('.ser2').appendChild(nc1);
+    }
+    n1=1;
+    n2=10;
+    if(" {{flag}} ")
+    {
+        getData(" {{query}} ",true,n1,n2);
+    }
+    else{
+        console.log('no');
+    }
+    document.getElementById('load-more').addEventListener('click',()=>{
+        if(" {{flag}} " && flag3)
+        {
+            getData(" {{query}} ",false,n1+9,n2+9);
+        }
+        else{
+            let q=document.getElementById('query').value;
+            getData(q,false,n1+9,n2+9);
+        }
+    })
+    document.getElementById('ser-btn1').addEventListener('click',(e)=>{
+        flag3=false;
+        e.preventDefault();
+        document.querySelector('.ser2').innerHTML="";
+        let q=document.getElementById('query').value;
+        getData(q,true,n1,n2);
+    })
+</script>

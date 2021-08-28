@@ -1,0 +1,128 @@
+{{>navbar}}
+<div class="more-main">
+    <div class="m-box">
+        <div class="mbox1">
+            <div class="mimg">
+                <img src="food.jpg" alt="food">
+            </div>
+            <div class="mbox11">
+                <h1>Lorem ipsum dolor sit amet.</h1>
+                <div class="mbox12">
+                    <h5>Calories - Lorem.</h5>
+                    <h5>Cautions - Lorem, ipsum.</h5>
+                </div>
+            </div>
+        </div>
+        <div class="mbox2">
+            <h2>Recipe</h2>
+            <div class="mbt1">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Process</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mbt1">
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mbox3">
+            <h2>Nutritional Facts</h2>
+            <div class="mbt2">
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mbt2">
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Mark</td>
+                            <td>cuban</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mbox31">
+                <h4 style="color: cyan;">Diet Labels</h4>
+                <p id="mbox31p1"></p>
+            </div>
+            <div class="mbox31">
+                <h4 style="color: rgb(102, 228, 0);">Health Labels</h4>
+                <p id="mbox31p2"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('.m-box').style.display='none';
+    document.querySelector('.more-main').classList.add('ser-main-h');
+    let nc=document.createElement('div');
+    nc.setAttribute('class','load load-1');
+    nc.innerHTML=`<div class="spinner-grow text-danger" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow text-info" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div class="spinner-grow text-success" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>`;
+    document.querySelector('.more-main').appendChild(nc);
+
+    app_id="3e416a2f";
+    api_key="99b6af3bb8c0bddcec57f925bf859cf8";
+    let query="{{query}}";
+    let from="{{from}}";
+    let to="{{to}}";
+    let n="{{n}}";
+    fetch(`https://api.edamam.com/search?q=${query}&app_id=${app_id}&app_key=${api_key}&from=${from}&to=${to}`).then((response)=>{
+        return response.json();
+    }).then((data)=>{
+        document.querySelector('.more-main').removeChild(nc);
+        document.querySelector('.more-main').classList.remove('ser-main-h');
+        document.querySelector('.m-box').style.display='block';
+        let data1=data.hits[n].recipe;
+        document.querySelector('.mimg').innerHTML=`<img src="${data1.image}" alt="img">`;
+        document.querySelector('.mbox11').innerHTML=`
+                <h1>${data1.label}</h1>
+                <div class="mbox12">
+                    <h5>Calories - ${data1.calories}</h5>
+                    <h5>Cautions - ${(data1.cautions !='')? data1.cautions : "Null"}</h5>
+                </div>
+        `;
+        str1="";
+        h=1;
+        for(i of data1.ingredientLines)
+        {
+            str1+=`<tr>
+                    <th scope="row">${h}</th>
+                    <td>${i}</td>
+                </tr>`;
+            h++;
+        }
+        document.getElementById('mbt1').innerHTML=str1;
+        str2="";
+        for(i of Object.values(data1.totalNutrients))
+        {
+            str2+=`<tr>
+                    <th scope="row">${i.label}</th>
+                    <td>${(Math.round(i.quantity * 100) / 100).toFixed(2)}</td>
+                    <td>${i.unit}</td>
+                </tr>`;
+        }
+        document.getElementById('mbt2').innerHTML=str2;
+        document.getElementById('mbox31p1').innerHTML=`${(data1.dietLabels.length!=0)? data1.dietLabels.toString().replace(/,/g, " , ").slice(0,90) : "Null"}`;
+        document.getElementById('mbox31p2').innerHTML=`${data1.healthLabels.toString().replace(/,/g, " , ")}`;
+    })
+</script>
