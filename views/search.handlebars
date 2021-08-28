@@ -40,25 +40,33 @@
         let data=await response.json();
         var str="";
         k=0;
-        for(i of data.hits)
+        if(data.hits.length!=0)
         {
-            str+=`<div class="ser-card">
-                    <div class="img">
-                        <img src="${i.recipe.image}" alt="">
-                    </div>
-                    <div class="sc1">
-                        <h5>${i.recipe.label}</h5>
-                        <div class="view">
-                            <a href="/more/${query}-${from}-${to}-${k}">View More</a>
+            for(i of data.hits)
+            {
+                str+=`<div class="ser-card">
+                        <div class="img">
+                            <img src="${i.recipe.image}" alt="">
                         </div>
-                    </div>
-                    <div class="sc2">
-                        <p>Calories: <b>${i.recipe.calories}</b></p>
-                        <p>Diet Label: <b>${(i.recipe.dietLabels.length!=0)? i.recipe.dietLabels.toString().replace(/,/g, " , ").slice(0,90) : "Null"}</b></p>
-                        <p>Health Label: <b>${i.recipe.healthLabels.toString().replace(/,/g, " , ").slice(0,90)} ...</b></p>
-                    </div>
-                </div>`;
-            k++;
+                        <div class="sc1">
+                            <h5>${i.recipe.label}</h5>
+                            <div class="view">
+                                <a href="/more/${query}-${from}-${to}-${k}">View More</a>
+                            </div>
+                        </div>
+                        <div class="sc2">
+                            <p>Calories: <b>${i.recipe.calories}</b></p>
+                            <p>Diet Label: <b>${(i.recipe.dietLabels.length!=0)? i.recipe.dietLabels.toString().replace(/,/g, " , ").slice(0,90) : "Null"}</b></p>
+                            <p>Health Label: <b>${i.recipe.healthLabels.toString().replace(/,/g, " , ").slice(0,90)} ...</b></p>
+                        </div>
+                    </div>`;
+                k++;
+            }
+
+        }
+        else
+        {
+            str+=`<h3>No search results found for - ${query}. Check if any spelling mistakes or try more accurate search.</h3>`
         }
         if(flag1)
         {
